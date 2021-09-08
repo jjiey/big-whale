@@ -531,11 +531,13 @@ public class ScriptServiceImpl extends AbstractMysqlPagingAndSortingQueryService
                     String start = content.substring(0, pos - 1);
                     String end = content.substring(pos);
                     String conf = "--proxy-user " + user;
-                    content = start + " " + conf + " " + end;
+                    //content = start + " " + conf + " " + end;
                 } else {
-                    content = content.replaceAll("--proxy-user [\\w-.,]+", "--proxy-user " + user);
+                    //content = content.replaceAll("--proxy-user [\\w-.,]+", "--proxy-user " + user);
+                    content = content.replaceAll("--proxy-user [\\w-.,]+", "");
                 }
             }
+            content = "source /etc/profile && " + content;
         } else {
             if (!content.contains(" -d ")) {
                 int pos = content.indexOf(" -");

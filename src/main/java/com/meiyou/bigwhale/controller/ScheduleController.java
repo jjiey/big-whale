@@ -293,6 +293,9 @@ public class ScheduleController extends BaseController {
         Map<String, Schedule.Topology.Node> nodeIdToData = schedule.analyzeNextNode(previousScheduleTopNodeId);
         for (String nodeId : nodeIdToData.keySet()) {
             Script script = scriptService.findOneByQuery("scheduleId=" + schedule.getId() + ";scheduleTopNodeId=" + nodeId);
+            if (Constant.ScriptType.SPARK_BATCH.equals(script.getType()) || Constant.ScriptType.SPARK_STREAM.equals(script.getType())) {
+                script.setContent("source /etc/profile && " + script.getContent().replaceAll("--proxy-user [\\w-.,]+", ""));
+            }
             ScriptHistory scriptHistory = scriptService.generateHistory(script, schedule, scheduleInstanceId, previousScheduleTopNodeId, supplement ? 2 : 0);
             scriptHistory.updateState(Constant.JobState.WAITING_PARENT_);
             if (supplement) {
